@@ -62,5 +62,5 @@
 ## Hosted Url- 
 
    ```
-   ----
+   https://x-chat-livid.vercel.app/
    ```
