@@ -4,7 +4,7 @@ import { IoMdSend } from "react-icons/io";
 import PropTypes from "prop-types";
 import io from "socket.io-client";
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("https://x-chat-backend-ld6h.onrender.com");
 
 function Chat({ isDarkTheme, user }) {
   const [messages, setMessages] = useState([]);
@@ -39,7 +39,7 @@ function Chat({ isDarkTheme, user }) {
 
   useEffect(() => {
     fetch(
-      `http://localhost:5000/${currentRoom}`
+      `https://x-chat-backend-ld6h.onrender.com/${currentRoom}`
     )
       .then((response) => response.json())
       .then((data) => {
