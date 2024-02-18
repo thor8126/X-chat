@@ -39,7 +39,7 @@ function Chat({ isDarkTheme, user }) {
 
   useEffect(() => {
     fetch(
-      `https://x-chat-backend-ld6h.onrender.com/${currentRoom}`
+      `https://x-chat-backend-ld6h.onrender.com/getMessages/${currentRoom}`
     )
       .then((response) => response.json())
       .then((data) => {
