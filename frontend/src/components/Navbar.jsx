@@ -36,7 +36,7 @@ function Navbar({ user, onLogout, isDarkTheme, setIsDarkTheme }) {
               isDarkTheme ? "text-white" : "text-black"
             }`}
           >
-            WHISPER
+            X-chat
           </h1>
         </div>
 
