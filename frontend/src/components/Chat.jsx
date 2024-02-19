@@ -7,8 +7,8 @@ import InputBox from "../utility/InputBox";
 import Sidebar from "../utility/Sidebar";
 import Messages from "../utility/Messages";
 
-// const url = "https://x-chat-backend-ld6h.onrender.com";
-const url = "http://localhost:5000";
+const url = "https://x-chat-backend-ld6h.onrender.com";
+// const url = "http://localhost:5000";
 
 const socket = io.connect(url);
 
