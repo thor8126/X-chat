@@ -1,6 +1,9 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
+// const url = "https://x-chat-backend-ld6h.onrender.com";
+const url = "http://localhost:5000";
+
 function LoginForm({ onLogin, isDarkTheme }) {
   const [username, setUsername] = useState("");
 
@@ -11,7 +14,7 @@ function LoginForm({ onLogin, isDarkTheme }) {
         const formData = new FormData();
         formData.append("username", username);
 
-        await fetch("https://x-chat-backend-ld6h.onrender.com/login", {
+        await fetch(`${url}/api/users/login`, {
           method: "POST",
           body: formData,
         });
@@ -41,7 +44,7 @@ function LoginForm({ onLogin, isDarkTheme }) {
             isDarkTheme ? "text-white" : "text-gray-800"
           }`}
         >
-          Welcome to WHISPER
+          Welcome to X-chat
           <br />
           <span className="text-sm font-medium text-gray-500"
           >login or signup here</span>
