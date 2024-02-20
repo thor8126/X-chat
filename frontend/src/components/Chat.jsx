@@ -1,28 +1,34 @@
 import React, { useState, useEffect, useRef } from "react";
 
-
 import PropTypes from "prop-types";
 import io from "socket.io-client";
 import InputBox from "../utility/InputBox";
 import Sidebar from "../utility/Sidebar";
 import Messages from "../utility/Messages";
+import PasswordModal from "../utility/PasswordModal";
+import { toast } from "react-toastify";
 
-const url = "https://x-chat-backend-ld6h.onrender.com";
-// const url = "http://localhost:5000";
+// const url = "https://x-chat-backend-ld6h.onrender.com";
+const url = "http://localhost:5000";
 
 const socket = io.connect(url);
 
 function Chat({ isDarkTheme, user }) {
-
-  const [toggleScroll, setToggleScroll] = useState(false)
-
+  // State for messages
   const [messages, setMessages] = useState([]);
-  const [currentRoom, setCurrentRoom] = useState("general");
-  const [rooms, setRooms] = useState([{ name: "general", isPrivate: false }]);
-  console.log("rooms:", rooms);
+  // State for auto-scrolling
+  const [toggleScroll, setToggleScroll] = useState(false);
+  // State for current room
+  const [currentRoom, setCurrentRoom] = useState();
+  // State for rooms
+  const [rooms, setRooms] = useState([]);
+  // State for main chat area
   const [isMainChatEnabled, setIsMainChatEnabled] = useState(false);
+  // State for join room modal
   const [showJoinRoomModal, setShowJoinRoomModal] = useState(false);
+  // State for selected room
   const [selectedRoom, setSelectedRoom] = useState(null);
+  // State for password
   const [password, setPassword] = useState("");
 
   useEffect(() => {
@@ -33,20 +39,18 @@ function Chat({ isDarkTheme, user }) {
     return () => {
       socket.off("message");
     };
-  }, [toggleScroll]);
+  }, [toggleScroll, currentRoom, messages]);
 
   useEffect(() => {
-    socket.emit("roomList")
+    socket.emit("roomList");
     socket.on("roomList", (roomList) => {
       console.log("Room list received:", roomList);
-      setRooms([...rooms, ...roomList]);
+      setRooms(roomList);
     });
     return () => {
       socket.off("roomList");
     };
-  }, []);
-
- 
+  }, [currentRoom]);
 
   useEffect(() => {
     fetch(`${url}/api/messages/getMessages/${currentRoom}`)
@@ -55,7 +59,7 @@ function Chat({ isDarkTheme, user }) {
         setMessages(data);
       })
       .catch((error) => console.error("Error fetching messages:", error));
-  }, [currentRoom,toggleScroll]);
+  }, [currentRoom]);
 
   const joinRoom = (room) => {
     if (room.isPrivate) {
@@ -85,12 +89,12 @@ function Chat({ isDarkTheme, user }) {
           setShowJoinRoomModal(false);
           setPassword(""); // Clear password input
         } else {
-          alert("Incorrect password. Please try again.");
+          toast("Incorrect password. Please try again.");
         }
       })
       .catch((error) => {
         console.error("Error checking room password:", error);
-        alert(
+        toast(
           "An error occurred while checking room password. Please try again."
         );
       });
@@ -110,13 +114,9 @@ function Chat({ isDarkTheme, user }) {
     }
   }, [messages]);
 
- 
-
   const toggleMainChat = () => {
     setIsMainChatEnabled(!isMainChatEnabled);
   };
-
- 
 
   const createPrivateRoom = () => {
     const roomName = prompt("Enter the name of the private room:");
@@ -127,19 +127,19 @@ function Chat({ isDarkTheme, user }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ roomName, password, isPrivate: true}),
+        body: JSON.stringify({ roomName, password, isPrivate: true }),
       })
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            alert(`Private chat room "${roomName}" created successfully!`);
+            toast(`Private chat room "${roomName}" created successfully!`);
           } else {
-            alert("Failed to create private chat room. Please try again.");
+            toast("Failed to create private chat room. Please try again.");
           }
         })
         .catch((error) => {
           console.error("Error creating private chat room:", error);
-          alert(
+          toast(
             "An error occurred while creating private chat room. Please try again."
           );
         });
@@ -153,43 +153,56 @@ function Chat({ isDarkTheme, user }) {
       }`}
     >
       <div className="flex flex-1">
-        <Sidebar createPrivateRoom={createPrivateRoom} rooms={rooms} isDarkTheme={isDarkTheme} joinRoom={joinRoom} currentRoom={currentRoom} />
-        
+        <Sidebar
+          createPrivateRoom={createPrivateRoom}
+          rooms={rooms}
+          isDarkTheme={isDarkTheme}
+          joinRoom={joinRoom}
+          currentRoom={currentRoom}
+        />
+
         {/* Main chat area */}
         <div className="w-full sm:w-3/4 p-2">
-          <Messages toggleScroll={toggleScroll} isDarkTheme={isDarkTheme} messages={messages} user={user} />
-          <InputBox setToggleScroll={setToggleScroll} toggleScroll={toggleScroll} isDarkTheme={isDarkTheme} messages={messages} setMessages={setMessages} user={user} socket={socket} currentRoom={currentRoom} />
+          {!currentRoom ? (
+            <div className="flex flex-col items-center justify-center h-[72vh]">
+              <h2 className="text-2xl">Welcome to X-chat</h2>
+              <h4 className="text-lg mt-4">
+                {" "}
+                Please join a room to start chatting
+              </h4>
+            </div>
+          ) : (
+            <Messages
+              chatBoxRef={chatBoxRef}
+              toggleScroll={toggleScroll}
+              messages={messages}
+              isDarkTheme={isDarkTheme}
+              user={user}
+            />
+          )}
+          {currentRoom && (
+            <InputBox
+              setToggleScroll={setToggleScroll}
+              toggleScroll={toggleScroll}
+              isDarkTheme={isDarkTheme}
+              messages={messages}
+              setMessages={setMessages}
+              user={user}
+              socket={socket}
+              currentRoom={currentRoom}
+            />
+          )}
         </div>
       </div>
-      
+
       {/* Join Room Modal */}
       {showJoinRoomModal && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-75 flex justify-center items-center">
-          <div className="bg-white p-4 rounded-md text-black">
-            <h2 className="text-lg font-bold mb-4">Join Private Room</h2>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
-              className="block w-full p-2 mb-4 border rounded-md"
-            />
-            <div className="flex justify-end">
-              <button
-                onClick={handleJoinRoom}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-              >
-                Join
-              </button>
-              <button
-                onClick={() => setShowJoinRoomModal(false)}
-                className="bg-gray-500 text-white px-4 py-2 rounded-md"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <PasswordModal
+          setPassword={setPassword}
+          setShowJoinRoomModal={setShowJoinRoomModal}
+          handleJoinRoom={handleJoinRoom}
+          password={password}
+        />
       )}
     </div>
   );

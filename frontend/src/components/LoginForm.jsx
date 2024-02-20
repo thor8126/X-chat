@@ -1,8 +1,8 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-const url = "https://x-chat-backend-ld6h.onrender.com";
-// const url = "http://localhost:5000";
+// const url = "https://x-chat-backend-ld6h.onrender.com";
+const url = "http://localhost:5000";
 
 function LoginForm({ onLogin, isDarkTheme }) {
   const [username, setUsername] = useState("");
@@ -11,20 +11,30 @@ function LoginForm({ onLogin, isDarkTheme }) {
     e.preventDefault();
     if (username.trim() !== "") {
       try {
-        const formData = new FormData();
-        formData.append("username", username);
-
-        await fetch(`${url}/api/users/login`, {
+        const response = await fetch(`${url}/api/users/login`, {
           method: "POST",
-          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username }),
         });
-
+  
+        if (!response.ok) {
+          throw new Error("Failed to login");
+        }
+  
+        // Log the response from the server
+        const responseData = await response.json();
+        console.log("Response:", responseData);
+  
+        // Assuming the response contains a message indicating success
         onLogin(username);
       } catch (error) {
         console.error("Error logging in:", error);
       }
     }
   };
+  
 
   
 

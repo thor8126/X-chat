@@ -22,11 +22,11 @@ function Navbar({ user, onLogout, isDarkTheme, setIsDarkTheme }) {
 
   return (
     <nav
-      className={`py-4 ${
+      className={`py-2 ${
         isDarkTheme ? "bg-neutral-900" : "bg-white"
       } shadow-xl`}
     >
-      <div className="container mx-auto flex justify-between items-center ">
+      <div className="px-10 mx-auto flex justify-between items-center ">
         <div className="flex items-center">
           <img src={logo} alt="Logo" className="mr-2 mt-2" width={32}
                   height={32} />{" "}

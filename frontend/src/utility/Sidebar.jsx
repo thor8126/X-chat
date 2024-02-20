@@ -13,7 +13,7 @@ function Sidebar({
   return (
     <>
       <div
-        className={`w-full sm:w-1/4 w-20 p-8 ${
+        className={`w-full sm:w-1/4 p-8 ${
           isDarkTheme
             ? "bg-neutral-800 text-white"
             : "bg-neutral-180 text-gray-700"

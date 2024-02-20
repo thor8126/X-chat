@@ -54,7 +54,6 @@ io.on("connection", (socket) => {
   socket.on("roomList", async () => {
       console.log("Fetching room list");
       const rooms = await Room.find({});
-      // remove passwords from private rooms
       const filteredRooms = rooms.map((room) => {
         return {
           name: room.roomName,

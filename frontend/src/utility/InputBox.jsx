@@ -13,6 +13,10 @@ function InputBox({isDarkTheme,user,setMessages,currentRoom,joinRoom,leaveRoom,s
 
     const sendMessage = () => {
         if (message.trim() === "") return;
+        if (!currentRoom) {
+          alert("Please join a room first");
+          return;
+        };
         const newMessage = { text: message, user, timestamp: Date.now() ,room:currentRoom};
         console.log("newMessage:", newMessage);
         socket.emit("sendMessage", { message: newMessage });

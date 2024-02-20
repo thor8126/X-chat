@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 // Create a schema for user information
 const userSchema = new mongoose.Schema({
   username: String,
-  profilePic: String,
 });
 
 // Create a model for the user

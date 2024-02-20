@@ -12,14 +12,6 @@ function App() {
   const handleLogin = (username, pic) => {
     localStorage.setItem("user", username);
     setUser(username);
-    if (pic instanceof File) {
-      const picUrl = URL.createObjectURL(pic);
-      localStorage.setItem("profilePic", picUrl); // Store profile pic URL in local storage
-      setProfilePic(picUrl);
-    } else {
-      localStorage.setItem("profilePic", pic); // Store profile pic URL in local storage
-      setProfilePic(pic);
-    }
   };
 
   const handleLogout = () => {

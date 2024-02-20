@@ -3,10 +3,15 @@ const User = require("../models/User");
 // Logic to handle user login
 exports.login = async (req, res, next) => {
   try {
-    const { username, profilePic } = req.body;
-    const user = new User({ username, profilePic });
-    await user.save();
-    res.status(201).json({ message: "User data saved successfully" });
+    const { username } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) {
+      const newUser = new User({ username });
+      await newUser.save();
+      return res.json(newUser);
+    }
+    res.json(user);
+
   } catch (error) {
     console.error("Error saving user data:", error);
     res.status(500).json({ error: "Failed to save user data" });
