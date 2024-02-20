@@ -8,8 +8,8 @@ import Messages from "../utility/Messages";
 import PasswordModal from "../utility/PasswordModal";
 import { toast } from "react-toastify";
 
-// const url = "https://x-chat-backend-ld6h.onrender.com";
-const url = "http://localhost:5000";
+const url = "https://x-chat-backend-ld6h.onrender.com";
+// const url = "http://localhost:5000";
 
 const socket = io.connect(url);
 
@@ -59,7 +59,7 @@ function Chat({ isDarkTheme, user }) {
         setMessages(data);
       })
       .catch((error) => console.error("Error fetching messages:", error));
-  }, [currentRoom]);
+  });
 
   const joinRoom = (room) => {
     if (room.isPrivate) {

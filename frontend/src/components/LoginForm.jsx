@@ -1,8 +1,8 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-// const url = "https://x-chat-backend-ld6h.onrender.com";
-const url = "http://localhost:5000";
+const url = "https://x-chat-backend-ld6h.onrender.com";
+// const url = "http://localhost:5000";
 
 function LoginForm({ onLogin, isDarkTheme }) {
   const [username, setUsername] = useState("");
@@ -18,15 +18,15 @@ function LoginForm({ onLogin, isDarkTheme }) {
           },
           body: JSON.stringify({ username }),
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to login");
         }
-  
+
         // Log the response from the server
         const responseData = await response.json();
         console.log("Response:", responseData);
-  
+
         // Assuming the response contains a message indicating success
         onLogin(username);
       } catch (error) {
@@ -34,9 +34,6 @@ function LoginForm({ onLogin, isDarkTheme }) {
       }
     }
   };
-  
-
-  
 
   return (
     <div
@@ -56,12 +53,13 @@ function LoginForm({ onLogin, isDarkTheme }) {
         >
           Welcome to X-chat
           <br />
-          <span className="text-sm font-medium text-gray-500"
-          >login or signup here</span>
+          <span className="text-sm font-medium text-gray-500">
+            login or signup here
+          </span>
         </h2>
         <hr className="mb-6 border border-gray-500" />
         <form onSubmit={handleSubmit}>
-        <label
+          <label
             htmlFor="profilePic"
             className={`block mt-8 ${
               isDarkTheme ? "text-white" : "text-gray-800"
@@ -80,7 +78,7 @@ function LoginForm({ onLogin, isDarkTheme }) {
                 : " border bg-gray-100 text-black"
             }`}
           />
-          
+
           <button
             type="submit"
             className={`w-full mt-8 rounded py-2 text-lg ${
